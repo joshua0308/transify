@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @font-face {
+        font-family: officina;
+        src: url(./font/itc-officina-sans-std-book.otf) format('opentype');
+      }
+
+      @font-face {
+        font-family: officina;
+        font-weight: bold;
+        src: url(./font/itc-officina-sans-std-bold.otf) format('opentype');
+      }
+
+      h1 {
+        font-weight: bold;
+        margin: auto;
+        padding: 10 0;
+      }
+
+      body {
+        font-family: officina;
+        border-radius: 10;
+        width: 200px;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      img {
+        width: 80px;
+        height: auto;
+      }
+
+      .btn {
+        font-family: officina;
+        font-weight: 300;
+        font-size: 16px;
+        height: 50px;
+        width: 200px;
+        margin: 5px 0;
+        padding: 5px;
+        text-align: center;
+        background: white;
+        color: black;
+        border-radius: 7px;
+        box-shadow: 2 5px #8b8b8b;
+        overflow: hidden;
+      }
+
+      .btn:hover {
+        background: #febb6a;
+      }
+
+      .btn:focus {
+        background: #fe9901;
+        outline: none;
+      }
+
+      #changeCurrency5 {
+        margin: auto;
+        padding: 1;
+        border: none;
+        height: 30px;
+        font-size: 13px;
+        cursor: pointer;
+        margin-top: 5px;
+      }
+
+      #changeCurrency5:hover {
+        background: #ffffff;
+        font-weight: bold;
+        text-decoration: underline;
+      }
+
+      #changeCurrency5:active {
+        background: #ffffff;
+        font-weight: bold;
+        text-decoration: underline;
+        outline: none;
+      }
+
+      #changeCurrency5:focus {
+        background: #ffffff;
+        /* font-weight: bold; */
+        /* text-decoration: underline; */
+        outline: none;
+      }
+
+      .logo {
+        width: 68%;
+        margin: auto;
+        margin-top: 9px;
+        margin-bottom: 12px;
+      }
+
+      /* .btn:before {
+              position: absolute;
+              left: 0;
+              width: 40%;
+              font-size: 160%;
+              line-height: 0.8;
+              color: #0a833d;
+            } */
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <img class="logo" src="./images/logo.png" />
+
+      <button class="btn" id="changeCurrency1">
+        <img src="./images/korea.png" />
+      </button>
+
+      <button class="btn" id="changeCurrency2">
+        <img src="./images/canada.png" />
+      </button>
+
+      <button class="btn" id="changeCurrency3">
+        <img src="./images/dominican.png" />
+      </button>
+
+      <button class="btn" id="changeCurrency4">
+        <img src="./images/china.png" />
+      </button>
+      <button class="btn" id="changeCurrency5">
+        <!-- <img src="./images/china.png" /> -->
+      </button>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

@@ -1,7 +1,7 @@
 {
-  "name": "Getting Started Example",
+  "name": "Transify",
   "version": "1.0",
-  "description": "Build an Extension!",
+  "description": "Convert dollar prices to your local currency on Amazon",
   "permissions": ["activeTab", "declarativeContent", "storage"],
   "options_page": "options.html",
   "background": {
@@ -17,17 +17,17 @@
   "page_action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "images/globe.png",
-      "32": "images/globe.png",
-      "48": "images/globe.png",
-      "128": "images/globe.png"
+      "16": "images/favicon.png",
+      "32": "images/favicon.png",
+      "48": "images/favicon.png",
+      "128": "images/favicon.png"
     }
   },
   "icons": {
-    "16": "images/globe.png",
-    "32": "images/globe.png",
-    "48": "images/globe.png",
-    "128": "images/globe.png"
+    "16": "images/favicon.png",
+    "32": "images/favicon.png",
+    "48": "images/favicon.png",
+    "128": "images/favicon.png"
   },
   "manifest_version": 2
 }

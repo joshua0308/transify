@@ -1,30 +1,5 @@
-// https://www.amazon.com/Gillette-Mach3-Razor-Blades-Refills/dp/B0039LMTBA?ref_=Oct_DLandingS_PC_7e8aa158_3&smid=ATVPDKIKX0DER&th=1
-
 console.log(window.navigator.language);
-
-const apiKey = 'f7f89cbbe808a7d77f98';
-
-let urlKRW =
-  'https://free.currconv.com/api/v7/convert?q=USD_KRW&compact=ultra&apiKey=f7f89cbbe808a7d77f98';
-let urlDOP =
-  'https://free.currconv.com/api/v7/convert?q=USD_DOP&compact=ultra&apiKey=f7f89cbbe808a7d77f98';
-let urlCNY =
-  'https://free.currconv.com/api/v7/convert?q=USD_CNY&compact=ultra&apiKey=f7f89cbbe808a7d77f98';
-let urlCAD =
-  'https://free.currconv.com/api/v7/convert?q=USD_CAD&compact=ultra&apiKey=f7f89cbbe808a7d77f98';
-
-let urlArr = [urlKRW, urlDOP, urlCNY, urlCAD];
-let currencyTracker = {};
-
-for (let i = 0; i < urlArr.length; i += 1) {
-  fetch(urlArr[i])
-    .then(response => response.json())
-    .then(myJson => {
-      currencyTracker[
-        urlArr[i].slice(urlArr[i].indexOf('USD'), urlArr[i].indexOf('USD') + 7)
-      ] = Object.values(myJson)[0];
-    });
-}
+// fetch('');
 
 let obj = document.body.querySelectorAll('span');
 
@@ -141,21 +116,71 @@ function priceToNum(price) {
 }
 
 function toWon(price) {
-  price = (price * 1) / 0.00084;
+  let conversion = 1 / 0.00084;
+  // if (currencyTracker) {
+  //   conversion = currencyTracker.KOR;
+  //   console.log('HERE');
+  // }
+  price = price * conversion;
   return parseInt(price);
 }
 
 function toCanadian(price) {
-  price = price * 1.33;
+  let conversion = 1.33;
+  price = price * conversion;
   return parseFloat(price).toFixed(2);
 }
 
 function toPesos(price) {
-  price = (price * 1) / 0.019;
+  let conversion = 1 / 0.019;
+  price = price * conversion;
   return parseInt(price);
 }
 
 function toYuan(price) {
-  price = (price * 1) / 0.14;
+  let conversion = 1 / 0.14;
+  price = price * conversion;
   return parseFloat(price).toFixed(2);
 }
+
+// https://www.amazon.com/Gillette-Mach3-Razor-Blades-Refills/dp/B0039LMTBA?ref_=Oct_DLandingS_PC_7e8aa158_3&smid=ATVPDKIKX0DER&th=1
+
+//-------------------------------------------------
+//-------------CURRCONV API------------------------
+//-------------------------------------------------
+
+// const apiKey = 'f7f89cbbe808a7d77f98';
+
+// let urlKRW =
+//   'https://free.currconv.com/api/v7/convert?q=USD_KRW&compact=ultra&apiKey=f7f89cbbe808a7d77f98';
+// let urlDOP =
+//   'https://free.currconv.com/api/v7/convert?q=USD_DOP&compact=ultra&apiKey=f7f89cbbe808a7d77f98';
+// let urlCNY =
+//   'https://free.currconv.com/api/v7/convert?q=USD_CNY&compact=ultra&apiKey=f7f89cbbe808a7d77f98';
+// let urlCAD =
+//   'https://free.currconv.com/api/v7/convert?q=USD_CAD&compact=ultra&apiKey=f7f89cbbe808a7d77f98';
+
+// let urlArr = [urlKRW, urlDOP, urlCNY, urlCAD];
+// let currencyTracker = {};
+
+// for (let i = 0; i < urlArr.length; i += 1) {
+//   fetch(urlArr[i])
+//     .then(response => response.json())
+//     .then(myJson => {
+//       currencyTracker[
+//         urlArr[i].slice(
+//           urlArr[i].indexOf('USD') + 4,
+//           urlArr[i].indexOf('USD') + 7
+//         )
+//       ] = Object.values(myJson)[0];
+//     })
+//     .catch(err => {
+//       console.error(err);
+//     });
+// }
+
+// console.log(currencyTracker);
+
+//-------------------------------------------------
+//-------------CURRCONV API------------------------
+//-------------------------------------------------

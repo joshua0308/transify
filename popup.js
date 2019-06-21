@@ -11,7 +11,7 @@ let changeCurrency5 = document.getElementById('changeCurrency5');
 
 changeCurrency1.innerText = 'Korean Won';
 changeCurrency2.innerText = 'Canadian Dollar';
-changeCurrency3.innerText = 'Dominican Pesos';
+changeCurrency3.innerText = 'EU Euro';
 changeCurrency4.innerText = 'Chinese Yuan';
 changeCurrency5.innerText = 'Return to default';
 
@@ -20,7 +20,7 @@ changeCurrency1.onclick = function(element) {
   console.log(currency);
 
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { greeting: 'korean' }, function(
+    chrome.tabs.sendMessage(tabs[0].id, { currency: 'KRW' }, function(
       response
     ) {
       console.log(response.farewell);
@@ -33,7 +33,7 @@ changeCurrency2.onclick = function(element) {
   console.log(currency);
 
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { greeting: 'canadian' }, function(
+    chrome.tabs.sendMessage(tabs[0].id, { currency: 'CAD' }, function(
       response
     ) {
       console.log(response.farewell);
@@ -46,7 +46,7 @@ changeCurrency3.onclick = function(element) {
   console.log(currency);
 
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { greeting: 'dominican' }, function(
+    chrome.tabs.sendMessage(tabs[0].id, { currency: 'EUR' }, function(
       response
     ) {
       console.log(response.farewell);
@@ -58,7 +58,7 @@ changeCurrency4.onclick = function(element) {
   console.log(currency);
 
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { greeting: 'chinese' }, function(
+    chrome.tabs.sendMessage(tabs[0].id, { currency: 'CNY' }, function(
       response
     ) {
       console.log(response.farewell);
@@ -71,7 +71,7 @@ changeCurrency5.onclick = function(element) {
   console.log(currency);
 
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { greeting: 'dollar' }, function(
+    chrome.tabs.sendMessage(tabs[0].id, { currency: 'USD' }, function(
       response
     ) {
       console.log(response.farewell);

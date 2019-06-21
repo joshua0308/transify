@@ -1,9 +1,28 @@
+////////////////////////////////////////
+//// DETECH USER'S BROWSER LANGUAGE ////
+////////////////////////////////////////
 console.log(window.navigator.language);
-// fetch('');
 
+///////////////////////////////////////////////
+//// USE FETCH TO GET DAILY EXCHANGE RATES ////
+///////////////////////////////////////////////
+
+fetch('https://api.exchangeratesapi.io/latest?base=USD')
+  .then(incoming => incoming.json())
+  .then(data => {
+    let priceAPIArr = [
+      data.rates.KRW,
+      data.rates.CAD,
+      data.rates.EUR,
+      data.rates.CNY
+    ];
+    return priceAPIArr;
+  })
+  .then(array => console.log(array));
+
+// SELECT ALL SPAN ELEMENTS
 let obj = document.body.querySelectorAll('span');
 
-let classArr = [];
 let idArr = [];
 
 // push all prices to priceArr
@@ -23,29 +42,32 @@ for (let i = 0; i < obj.length; i += 1) {
   }
 }
 
+// CREATE A FUNCTION THAT WILL TAKE CURRENCY AS AN ARGUMENT
+
 let priceWon = priceArr.map(function(el) {
-  if (!Number.isNaN(toWon(el))) {
+  let convertedPrice = toWon(el);
+  if (!Number.isNaN(parseFloat(convertedPrice))) {
     return '₩ ' + addComma(toWon(el).toString());
   }
   return 'cannot convert';
 });
 
 let priceCanadian = priceArr.map(function(el) {
-  if (!Number.isNaN(toCanadian(el))) {
+  if (!Number.isNaN(parseFloat(toCanadian(el)))) {
     return 'C$ ' + addComma(toCanadian(el).toString());
   }
   return 'cannot convert';
 });
 
-let pricePesos = priceArr.map(function(el) {
-  if (!Number.isNaN(toPesos(el))) {
-    return 'RD$ ' + addComma(toPesos(el).toString());
+let priceEuro = priceArr.map(function(el) {
+  if (!Number.isNaN(parseFloat(toEuro(el)))) {
+    return '€ ' + addComma(toEuro(el).toString());
   }
   return 'cannot convert';
 });
 
 let priceYuan = priceArr.map(function(el) {
-  if (!Number.isNaN(toYuan(el))) {
+  if (!Number.isNaN(parseFloat(toYuan(el)))) {
     return '¥ ' + addComma(toYuan(el).toString());
   }
   return 'cannot convert';
@@ -53,26 +75,20 @@ let priceYuan = priceArr.map(function(el) {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   idArr.forEach((el, index) => {
-    if (document.body.querySelector(`#${el}`)) {
+    let element = document.body.querySelector(`#${el}`);
+    let currency = request.currency;
+    if (element) {
       if (priceWon[index] !== 'cannot convert') {
-        if (request.greeting == 'korean') {
-          document.body.querySelector(`#${el}`).innerText = priceWon[index];
-        } else if (request.greeting == 'canadian') {
-          document.body.querySelector(`#${el}`).innerText =
-            priceCanadian[index];
-        } else if (request.greeting == 'dominican') {
-          document.body.querySelector(`#${el}`).innerText = pricePesos[index];
-        } else if (request.greeting == 'chinese') {
-          document.body.querySelector(`#${el}`).innerText = priceYuan[index];
-        } else if (request.greeting == 'dollar') {
-          document.body.querySelector(`#${el}`).innerText =
-            originalPriceArr[index];
-          document.body.querySelector(`#${el}`).style.backgroundColor =
-            'transparent';
+        if (currency === 'KRW') element.innerText = priceWon[index];
+        else if (currency === 'CAD') element.innerText = priceCanadian[index];
+        else if (currency === 'EUR') element.innerText = priceEuro[index];
+        else if (currency === 'CNY') element.innerText = priceYuan[index];
+        else if (currency === 'USD') {
+          element.innerText = originalPriceArr[index];
+          element.style.backgroundColor = 'transparent';
         }
-        if (request.greeting !== 'dollar') {
-          document.body.querySelector(`#${el}`).style.backgroundColor =
-            'yellow';
+        if (currency !== 'USD') {
+          element.style.backgroundColor = 'yellow';
         }
       }
     }
@@ -117,12 +133,8 @@ function priceToNum(price) {
 
 function toWon(price) {
   let conversion = 1 / 0.00084;
-  // if (currencyTracker) {
-  //   conversion = currencyTracker.KOR;
-  //   console.log('HERE');
-  // }
   price = price * conversion;
-  return parseInt(price);
+  return parseFloat(price).toFixed();
 }
 
 function toCanadian(price) {
@@ -131,10 +143,10 @@ function toCanadian(price) {
   return parseFloat(price).toFixed(2);
 }
 
-function toPesos(price) {
-  let conversion = 1 / 0.019;
+function toEuro(price) {
+  let conversion = 0.8844078889;
   price = price * conversion;
-  return parseInt(price);
+  return parseFloat(price).toFixed(2);
 }
 
 function toYuan(price) {

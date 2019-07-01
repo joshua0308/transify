@@ -1,198 +1,169 @@
-////////////////////////////////////////
-//// DETECH USER'S BROWSER LANGUAGE ////
-////////////////////////////////////////
-console.log(window.navigator.language);
+const exchangeRatesURL = 'https://api.exchangeratesapi.io/latest?base=USD';
+const userLanguage = window.navigator.language;
+const priceArr = [];
+const idArr = [];
 
-///////////////////////////////////////////////
-//// USE FETCH TO GET DAILY EXCHANGE RATES ////
-///////////////////////////////////////////////
+console.log(userLanguage);
 
-fetch('https://api.exchangeratesapi.io/latest?base=USD')
-  .then(incoming => incoming.json())
-  .then(data => {
-    let priceAPIArr = [
-      data.rates.KRW,
-      data.rates.CAD,
-      data.rates.EUR,
-      data.rates.CNY
-    ];
-    return priceAPIArr;
-  })
-  .then(array => console.log(array));
+const countryObj = {
+  KRW: {
+    symbol: '₩ ',
+    decimal: 0,
+    defaultRate: 1155.67,
+    price: []
+  },
+  CAD: {
+    symbol: 'C$ ',
+    decimal: 2,
+    defaultRate: 1.31,
+    price: []
+  },
+  EUR: {
+    symbol: '€ ',
+    decimal: 2,
+    defaultRate: 0.88,
+    price: []
+  },
+  CNY: {
+    symbol: '¥ ',
+    decimal: 2,
+    defaultRate: 6.87,
+    price: []
+  },
+  USD: {
+    price: []
+  }
+};
 
-// SELECT ALL SPAN ELEMENTS
-let obj = document.body.querySelectorAll('span');
+mapLocalPriceArrays();
+findAllPriceElements();
+addCurrencyListeners();
 
-let idArr = [];
+async function mapLocalPriceArrays() {
+  let data = {};
 
-// push all prices to priceArr
-let priceArr = [];
-let originalPriceArr = [];
+  try {
+    const response = await fetch(exchangeRatesURL);
+    const responseJSON = await response.json();
+    data = responseJSON.rates;
 
-for (let i = 0; i < obj.length; i += 1) {
-  if (obj[i].classList.value !== '' && obj[i].innerText.includes('$')) {
-    // set unique id to the elements that contain dollar sign
-    obj[i].setAttribute('id', `transifyId${i}`);
+    // use exchange rates in local storage if the API call was made less than one hour
+    chrome.storage.local.set(data, () => {
+      console.log('Data stored in chrome local storage');
+    });
+  } catch {
+    data = null;
+    console.log('Inside catch block');
+  }
+  // chrome.storage.local.get(['KRW', 'CAD'], result => console.log(result));
 
-    // push the id name to the id array
-    idArr.push(obj[i].id);
+  for (let country in countryObj) {
+    if (country !== 'USD') {
+      let symbol = countryObj[country].symbol;
+      let decimal = countryObj[country].decimal;
+      let exchangeRate = data
+        ? data[country]
+        : countryObj[country]['defaultRate'];
 
-    originalPriceArr.push(obj[i].innerText);
-    priceArr.push(priceToNum(obj[i].innerText));
+      countryObj[country].price = mapToLocalPrice(
+        priceArr,
+        exchangeRate,
+        symbol,
+        decimal
+      );
+    }
+  }
+
+  // map local price to array
+  function mapToLocalPrice(fromArr, exchangeRate, currencySymbol, decimal) {
+    return fromArr.map(dollarPrice => {
+      const convertedPrice = convertToLocal(dollarPrice, exchangeRate, decimal);
+      if (!Number.isNaN(parseFloat(convertedPrice))) {
+        return currencySymbol + addComma(convertedPrice);
+      }
+      return 'cannot convert';
+    });
+  }
+
+  // convert dollar price to local price
+  function convertToLocal(price, exchangeRate, decimal = 0) {
+    price = price * exchangeRate;
+    return parseFloat(price).toFixed(decimal);
+  }
+
+  // add comma to the converted price
+  function addComma(price) {
+    price = price.toString();
+    let commaPrice = '';
+    let commaCounter = 0;
+    let start = price.includes('.') ? price.indexOf('.') - 1 : price.length - 1;
+
+    for (let i = start; i >= 0; i -= 1) {
+      commaPrice = price[i] + commaPrice;
+      commaCounter += 1;
+      if (commaCounter % 3 === 0 && i !== 0) {
+        commaPrice = ',' + commaPrice;
+      }
+    }
+
+    commaPrice += price.slice(start + 1);
+    return commaPrice;
   }
 }
 
-// CREATE A FUNCTION THAT WILL TAKE CURRENCY AS AN ARGUMENT
+function findAllPriceElements() {
+  // SELECT ALL SPAN ELEMENTS
+  const spanArr = document.body.querySelectorAll('span');
 
-let priceWon = priceArr.map(function(el) {
-  let convertedPrice = toWon(el);
-  if (!Number.isNaN(parseFloat(convertedPrice))) {
-    return '₩ ' + addComma(toWon(el).toString());
+  // iterate through span elements
+  for (let i = 0; i < spanArr.length; i += 1) {
+    if (
+      spanArr[i].classList.value !== '' &&
+      spanArr[i].innerText.includes('$')
+    ) {
+      // set unique id to the elements that contain dollar sign
+      spanArr[i].setAttribute('id', `transifyId${i}`);
+
+      // push the newly assigned id name to the id array
+      idArr.push(spanArr[i].id);
+
+      // push the dollar price to countryObj.USD.price
+      countryObj.USD.price.push(spanArr[i].innerText);
+
+      // push the number value of the price to priceArr
+      priceArr.push(priceToNum(spanArr[i].innerText));
+    }
   }
-  return 'cannot convert';
-});
 
-let priceCanadian = priceArr.map(function(el) {
-  if (!Number.isNaN(parseFloat(toCanadian(el)))) {
-    return 'C$ ' + addComma(toCanadian(el).toString());
+  // convert price string to float number
+  function priceToNum(price) {
+    price = parseFloat(
+      price
+        .trim()
+        .replace('$', '')
+        .replace(/\,/g, '')
+    );
+    return price;
   }
-  return 'cannot convert';
-});
+}
 
-let priceEuro = priceArr.map(function(el) {
-  if (!Number.isNaN(parseFloat(toEuro(el)))) {
-    return '€ ' + addComma(toEuro(el).toString());
-  }
-  return 'cannot convert';
-});
+// add listeners for each currency
+function addCurrencyListeners() {
+  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    let country = request.country;
 
-let priceYuan = priceArr.map(function(el) {
-  if (!Number.isNaN(parseFloat(toYuan(el)))) {
-    return '¥ ' + addComma(toYuan(el).toString());
-  }
-  return 'cannot convert';
-});
-
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  idArr.forEach((el, index) => {
-    let element = document.body.querySelector(`#${el}`);
-    let currency = request.currency;
-    if (element) {
-      if (priceWon[index] !== 'cannot convert') {
-        if (currency === 'KRW') element.innerText = priceWon[index];
-        else if (currency === 'CAD') element.innerText = priceCanadian[index];
-        else if (currency === 'EUR') element.innerText = priceEuro[index];
-        else if (currency === 'CNY') element.innerText = priceYuan[index];
-        else if (currency === 'USD') {
-          element.innerText = originalPriceArr[index];
-          element.style.backgroundColor = 'transparent';
-        }
-        if (currency !== 'USD') {
-          element.style.backgroundColor = 'yellow';
+    idArr.forEach((el, index) => {
+      let element = document.body.querySelector(`#${el}`);
+      if (element) {
+        let countryPrice = countryObj[country]['price'][index];
+        if (countryPrice !== 'cannot convert') {
+          element.innerText = countryPrice;
+          element.style.backgroundColor =
+            country !== 'USD' ? 'yellow' : 'transparent';
         }
       }
-    }
+    });
+
+    sendResponse({ farewell: 'Currency: ' + country });
   });
-});
-
-function addComma(price) {
-  let commaPrice = '';
-  if (price.includes('.')) {
-    let starting = price.indexOf('.');
-    let commaCounter = 0;
-    for (let i = starting - 1; i >= 0; i--) {
-      commaPrice = price.charAt(i) + commaPrice;
-      commaCounter++;
-      if (commaCounter % 3 === 0 && i !== 0) {
-        commaPrice = ',' + commaPrice;
-      }
-    }
-    commaPrice += price.slice(starting);
-  } else {
-    let commaCounter = 0;
-    for (let i = price.length - 1; i >= 0; i--) {
-      commaPrice = price.charAt(i) + commaPrice;
-      commaCounter++;
-      if (commaCounter % 3 === 0 && i !== 0) {
-        commaPrice = ',' + commaPrice;
-      }
-    }
-  }
-  return commaPrice;
 }
-
-function priceToNum(price) {
-  price = parseFloat(
-    price
-      .trim()
-      .replace('$', '')
-      .replace(/\,/g, '')
-  );
-  return price;
-}
-
-function toWon(price) {
-  let conversion = 1 / 0.00084;
-  price = price * conversion;
-  return parseFloat(price).toFixed();
-}
-
-function toCanadian(price) {
-  let conversion = 1.33;
-  price = price * conversion;
-  return parseFloat(price).toFixed(2);
-}
-
-function toEuro(price) {
-  let conversion = 0.8844078889;
-  price = price * conversion;
-  return parseFloat(price).toFixed(2);
-}
-
-function toYuan(price) {
-  let conversion = 1 / 0.14;
-  price = price * conversion;
-  return parseFloat(price).toFixed(2);
-}
-
-// https://www.amazon.com/Gillette-Mach3-Razor-Blades-Refills/dp/B0039LMTBA?ref_=Oct_DLandingS_PC_7e8aa158_3&smid=ATVPDKIKX0DER&th=1
-
-//-------------------------------------------------
-//-------------CURRCONV API------------------------
-//-------------------------------------------------
-
-// const apiKey = 'f7f89cbbe808a7d77f98';
-
-// let urlKRW =
-//   'https://free.currconv.com/api/v7/convert?q=USD_KRW&compact=ultra&apiKey=f7f89cbbe808a7d77f98';
-// let urlDOP =
-//   'https://free.currconv.com/api/v7/convert?q=USD_DOP&compact=ultra&apiKey=f7f89cbbe808a7d77f98';
-// let urlCNY =
-//   'https://free.currconv.com/api/v7/convert?q=USD_CNY&compact=ultra&apiKey=f7f89cbbe808a7d77f98';
-// let urlCAD =
-//   'https://free.currconv.com/api/v7/convert?q=USD_CAD&compact=ultra&apiKey=f7f89cbbe808a7d77f98';
-
-// let urlArr = [urlKRW, urlDOP, urlCNY, urlCAD];
-// let currencyTracker = {};
-
-// for (let i = 0; i < urlArr.length; i += 1) {
-//   fetch(urlArr[i])
-//     .then(response => response.json())
-//     .then(myJson => {
-//       currencyTracker[
-//         urlArr[i].slice(
-//           urlArr[i].indexOf('USD') + 4,
-//           urlArr[i].indexOf('USD') + 7
-//         )
-//       ] = Object.values(myJson)[0];
-//     })
-//     .catch(err => {
-//       console.error(err);
-//     });
-// }
-
-// console.log(currencyTracker);
-
-//-------------------------------------------------
-//-------------CURRCONV API------------------------
-//-------------------------------------------------

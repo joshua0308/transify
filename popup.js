@@ -3,78 +3,39 @@
 // found in the LICENSE file.
 
 'use strict';
-let changeCurrency1 = document.getElementById('changeCurrency1');
-let changeCurrency2 = document.getElementById('changeCurrency2');
-let changeCurrency3 = document.getElementById('changeCurrency3');
-let changeCurrency4 = document.getElementById('changeCurrency4');
-let changeCurrency5 = document.getElementById('changeCurrency5');
+console.log('inside popup.js');
 
-changeCurrency1.innerText = 'Korean Won';
-changeCurrency2.innerText = 'Canadian Dollar';
-changeCurrency3.innerText = 'EU Euro';
-changeCurrency4.innerText = 'Chinese Yuan';
-changeCurrency5.innerText = 'Return to default';
-
-changeCurrency1.onclick = function(element) {
-  let currency = element.target.value;
-  console.log(currency);
-
-  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { currency: 'KRW' }, function(
-      response
-    ) {
-      console.log(response.farewell);
-    });
-  });
+const countryObj = {
+  KRW: {
+    id: 'changeCurrency1',
+    text: 'Korean Won'
+  },
+  CAD: {
+    id: 'changeCurrency2',
+    text: 'Canadian Dollar'
+  },
+  EUR: {
+    id: 'changeCurrency3',
+    text: 'EU Euro'
+  },
+  CNY: {
+    id: 'changeCurrency4',
+    text: 'Chinese Yuan'
+  },
+  USD: {
+    id: 'changeCurrency5',
+    text: 'Return to default'
+  }
 };
 
-changeCurrency2.onclick = function(element) {
-  let currency = element.target.value;
-  console.log(currency);
-
-  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { currency: 'CAD' }, function(
-      response
-    ) {
-      console.log(response.farewell);
+for (let country in countryObj) {
+  let element = document.getElementById(countryObj[country].id);
+  element.innerHTML = countryObj[country].text;
+  element.onclick = () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, { country }, function(response) {
+        console.log(response.farewell);
+      });
     });
-  });
-};
-
-changeCurrency3.onclick = function(element) {
-  let currency = element.target.value;
-  console.log(currency);
-
-  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { currency: 'EUR' }, function(
-      response
-    ) {
-      console.log(response.farewell);
-    });
-  });
-};
-changeCurrency4.onclick = function(element) {
-  let currency = element.target.value;
-  console.log(currency);
-
-  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { currency: 'CNY' }, function(
-      response
-    ) {
-      console.log(response.farewell);
-    });
-  });
-};
-
-changeCurrency5.onclick = function(element) {
-  let currency = element.target.value;
-  console.log(currency);
-
-  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { currency: 'USD' }, function(
-      response
-    ) {
-      console.log(response.farewell);
-    });
-  });
-};
+  };
+}

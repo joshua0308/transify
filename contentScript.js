@@ -3,8 +3,6 @@ const userLanguage = window.navigator.language;
 const priceArr = [];
 const idArr = [];
 
-console.log(userLanguage);
-
 const countryObj = {
   KRW: {
     symbol: '₩ ',

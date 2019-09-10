@@ -8,29 +8,29 @@ const countryObj = {
     symbol: '₩ ',
     decimal: 0,
     defaultRate: 1155.67,
-    price: []
+    price: [],
   },
   CAD: {
     symbol: 'C$ ',
     decimal: 2,
     defaultRate: 1.31,
-    price: []
+    price: [],
   },
   EUR: {
     symbol: '€ ',
     decimal: 2,
     defaultRate: 0.88,
-    price: []
+    price: [],
   },
   CNY: {
     symbol: '¥ ',
     decimal: 2,
     defaultRate: 6.87,
-    price: []
+    price: [],
   },
   USD: {
-    price: []
-  }
+    price: [],
+  },
 };
 
 mapLocalPriceArrays();
@@ -46,9 +46,9 @@ async function mapLocalPriceArrays() {
     data = responseJSON.rates;
 
     // use exchange rates in local storage if the API call was made less than one hour
-    chrome.storage.local.set(data, () => {
-      console.log('Data stored in chrome local storage');
-    });
+    // chrome.storage.local.set(data, () => {
+    //   console.log('Data stored in chrome local storage');
+    // });
   } catch {
     data = null;
     console.log('Inside catch block');
@@ -59,16 +59,9 @@ async function mapLocalPriceArrays() {
     if (country !== 'USD') {
       let symbol = countryObj[country].symbol;
       let decimal = countryObj[country].decimal;
-      let exchangeRate = data
-        ? data[country]
-        : countryObj[country]['defaultRate'];
+      let exchangeRate = data ? data[country] : countryObj[country]['defaultRate'];
 
-      countryObj[country].price = mapToLocalPrice(
-        priceArr,
-        exchangeRate,
-        symbol,
-        decimal
-      );
+      countryObj[country].price = mapToLocalPrice(priceArr, exchangeRate, symbol, decimal);
     }
   }
 
@@ -115,10 +108,7 @@ function findAllPriceElements() {
 
   // iterate through span elements
   for (let i = 0; i < spanArr.length; i += 1) {
-    if (
-      spanArr[i].classList.value !== '' &&
-      spanArr[i].innerText.includes('$')
-    ) {
+    if (spanArr[i].classList.value !== '' && spanArr[i].innerText.includes('$')) {
       // set unique id to the elements that contain dollar sign
       spanArr[i].setAttribute('id', `transifyId${i}`);
 
@@ -156,8 +146,7 @@ function addCurrencyListeners() {
         let countryPrice = countryObj[country]['price'][index];
         if (countryPrice !== 'cannot convert') {
           element.innerText = countryPrice;
-          element.style.backgroundColor =
-            country !== 'USD' ? 'yellow' : 'transparent';
+          element.style.backgroundColor = country !== 'USD' ? 'yellow' : 'transparent';
         }
       }
     });

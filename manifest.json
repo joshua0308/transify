@@ -2,14 +2,14 @@
   "name": "Transify",
   "version": "1.0",
   "description": "Convert dollar prices to your local currency on Amazon",
-  "permissions": ["activeTab", "declarativeContent", "storage"],
+  "permissions": ["activeTab", "http://www.amazon.com/*", "https://www.amazon.com/*"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
   },
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*"],
+      "matches": ["http://www.amazon.com/*", "https://www.amazon.com/*"],
       "js": ["contentScript.js"]
     }
   ],

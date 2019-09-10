@@ -2,23 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-'use strict';
+// 'use strict';
 
-chrome.runtime.onInstalled.addListener(function() {
-  chrome.storage.sync.set({ currency: '#3aa757' }, function() {
-    console.log('The color is green.');
-  });
+// chrome.runtime.onInstalled.addListener(function() {
+//   chrome.storage.sync.set({ currency: '#3aa757' }, function() {
+//     console.log('The color is green.');
+//   });
 
-  chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
-    chrome.declarativeContent.onPageChanged.addRules([
-      {
-        conditions: [
-          new chrome.declarativeContent.PageStateMatcher({
-            pageUrl: { hostEquals: 'www.amazon.com' }
-          })
-        ],
-        actions: [new chrome.declarativeContent.ShowPageAction()]
-      }
-    ]);
-  });
-});
+//   chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
+//     chrome.declarativeContent.onPageChanged.addRules([
+//       {
+//         conditions: [
+//           new chrome.declarativeContent.PageStateMatcher({
+//             pageUrl: { hostEquals: 'www.amazon.com' }
+//           })
+//         ],
+//         actions: [new chrome.declarativeContent.ShowPageAction()]
+//       }
+//     ]);
+//   });
+// });

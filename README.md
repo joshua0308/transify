@@ -14,7 +14,7 @@ Transify is a Chrome extension for converting USD prices to local currencies on 
 ## How to use Transify in local environment
 
 1. Direct to desired directory you want to download the chrome extension
-2. `git clone https://github.com/joshua0308/transify.git via terminal command`
+2. `$ git clone https://github.com/joshua0308/transify.git` via terminal command
 3. Open google chrome and go to manage extensions page
 4. Select 'Load Unpacked' on left top corner
 5. Select the Transify folder that you downloaded

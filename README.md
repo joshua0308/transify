@@ -1,6 +1,6 @@
-# transify
-Chrome Extension for Converting Prices to Local Currencies on Amazon
+# Transify
 
+Chrome Extension for Converting Prices to Local Currencies on Amazon
 
 Welcome to Transify!
 

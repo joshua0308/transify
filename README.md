@@ -2,7 +2,7 @@
   <img src ="./images/readme.png" width="400"/>
 </p>
 
-# Transify
+# Transify: Currency Converter for Amazon.com
 
 [![GitHub](https://img.shields.io/github/license/joshua0308/transify)](https://github.com/joshua0308/transify)
 [![Dependencies](https://david-dm.org/joshua0308/transify.svg)](https://david-dm.org/joshua0308/transify#info=dependencies)

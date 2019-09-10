@@ -6,7 +6,8 @@
 <!-- [![Vulnerabilities](https://snyk.io/test/github/joshua0308/transify/badge.svg)](https://snyk.io/test/github/joshua0308/transify) -->
 
 <p align="center">
-  <img src="./images/1280x800.png" alt="Demo of Transify" style="width: 55%">
+  <img src="./images/1400x560.png" alt="Demo of Transify" style="width: 55%">
+  <!-- <img src="./images/1280x800 2.png" alt="Demo of Transify" style="width: 55%"> -->
 </p>
 
 Transify is a Chrome extension for converting USD prices to local currencies on Amazon.com. Transify currently supports the following currency conversion: KRW, CAD, EUR, and CNY.
